@@ -1,24 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-class Square extends React.Component {
-  render() {
-    return (
-      <button className="square">
-        {/* TODO */}777
-      </button>
-    );
-  }
+function Square(props){
+	const [value,setValue] = useState(props.prop);
+	const changeX = ()=>{
+		setValue('X')
+		console.log('x')
+	}
+	return (
+		<button className="square" onClick={changeX}>
+			{value}
+		</button>
+	);
 }
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square />;
+	  console.log('rerender')
+    return <Square prop={i} />;
   }
 
   render() {
     const status = 'Next player: X';
-
+	
     return (
       <div>
         <div className="status">{status}</div>
