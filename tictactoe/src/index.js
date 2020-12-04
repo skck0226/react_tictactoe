@@ -2,48 +2,71 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props){
-	const [value,setValue] = useState(props.prop);
-	const changeX = ()=>{
-		setValue('X')
-		console.log('x')
-	}
 	return (
-		<button className="square" onClick={changeX}>
-			{value}
+		<button className="square" onClick={props.onClick}>	
+			{props.value}
 		</button>
 	);
 }
 
-class Board extends React.Component {
-  renderSquare(i) {
-	  console.log('rerender')
-    return <Square prop={i} />;
-  }
-
-  render() {
-    const status = 'Next player: X';
+function Board(){
+	const [square,setSquare] = useState([null,null,null,null,null,null,null,null,null]);
+	const [isX,setIsX] = useState(true);
+	const [end,setEnd] = useState('E');
+	const handleClick = (i)=>{
+		if(end=='X') alert('X')
+		else if(end=='O') alert('O') 
+		else{
+			if(isX){
+				setIsX(false);
+				let arr=[
+						...square.slice(0,i),
+						'X',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+			}
+			else{
+				setIsX(true);
+				let arr=[
+						...square.slice(0,i),
+						'O',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+			}
+			const squares = square.slice();
+			if(calculateWinner(squares)!=null){
+				setEnd(calculateWinner(squares));
+				console.log(calculateWinner(squares))	
+			}
+		}
+	}
+	const renderSquare = (i) => {
+		return <Square value={square[i]} onClick={()=>handleClick(i)}/>;
+	}
+	const status = 'Next player: ' + (isX?'X':'O') ;
 	
-    return (
-      <div>
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
-  }
+	return (
+	  <div>
+		<div className="status">{status}</div>
+		<div className="board-row">
+			{renderSquare(0)}
+			{renderSquare(1)}
+			{renderSquare(2)}
+		</div>
+		<div className="board-row">
+			{renderSquare(3)}
+			{renderSquare(4)}
+			{renderSquare(5)}
+		</div>
+		<div className="board-row">
+			{renderSquare(6)}
+			{renderSquare(7)}
+			{renderSquare(8)}
+		</div>
+	  </div>
+	);
 }
 
 class Game extends React.Component {
@@ -68,3 +91,22 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
