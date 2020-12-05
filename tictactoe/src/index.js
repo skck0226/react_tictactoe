@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props){
 	return (
-		<button className="square" onClick={props.onClick}>	
+		<button className="square" onClick={props.onClick} >	
 			{props.value}
 		</button>
 	);
@@ -13,10 +13,8 @@ function Board(){
 	const [square,setSquare] = useState([null,null,null,null,null,null,null,null,null]);
 	const [isX,setIsX] = useState(true);
 	const [end,setEnd] = useState('E');
-	const handleClick = (i)=>{
-		if(end=='X') alert('X')
-		else if(end=='O') alert('O') 
-		else{
+	const handleClick = (i)=>{	
+		if(end=='E'&&square[i]==null){
 			if(isX){
 				setIsX(false);
 				let arr=[
@@ -35,18 +33,27 @@ function Board(){
 					]
 				setSquare(arr);
 			}
-			const squares = square.slice();
-			if(calculateWinner(squares)!=null){
-				setEnd(calculateWinner(squares));
-				console.log(calculateWinner(squares))	
-			}
 		}
 	}
+	useEffect(() => {
+		const squares = square.slice();
+		console.log(squares)
+		if(calculateWinner(squares)!=null){
+			setEnd(calculateWinner(squares));
+			console.log(calculateWinner(squares))
+		}
+		if(end=='X') alert('X')
+		else if(end=='O') alert('O') 
+	});	
 	const renderSquare = (i) => {
 		return <Square value={square[i]} onClick={()=>handleClick(i)}/>;
 	}
-	const status = 'Next player: ' + (isX?'X':'O') ;
-	
+	const status = ( (end=='E') ? 'Next player : ' + (isX?'X':'O') : ('Winner Is : '+ ((end=='X')?'X':'O')) );
+	const reset = ()=>{
+		setSquare([null,null,null,null,null,null,null,null,null]);
+		setIsX(true);
+		setEnd('E');
+	}
 	return (
 	  <div>
 		<div className="status">{status}</div>
@@ -65,6 +72,9 @@ function Board(){
 			{renderSquare(7)}
 			{renderSquare(8)}
 		</div>
+		<button onClick={reset} >
+			reset
+		</button>
 	  </div>
 	);
 }
@@ -76,6 +86,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board />
         </div>
+		
         <div className="game-info">
           <div>{/* status */}</div>
           <ol>{/* TODO */}</ol>
