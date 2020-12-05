@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+
 function Square(props){
 	return (
 		<button className="square" onClick={props.onClick} >	
@@ -102,6 +103,7 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
