@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props){
 	return (
-		<button className="square" onClick={props.onClick}>	
+		<button className="square" onClick={props.onClick} >	
 			{props.value}
 		</button>
 	);
@@ -13,35 +13,38 @@ function Board(){
 	const [square,setSquare] = useState([null,null,null,null,null,null,null,null,null]);
 	const [isX,setIsX] = useState(true);
 	const [end,setEnd] = useState('E');
-	const handleClick = (i)=>{
+	const handleClick = (i)=>{	
+		if(isX){
+			setIsX(false);
+			let arr=[
+					...square.slice(0,i),
+					'X',
+					...square.slice(i+1)
+				]
+			setSquare(arr);
+			console.log(square)
+		}
+		else{
+			setIsX(true);
+			let arr=[
+					...square.slice(0,i),
+					'O',
+					...square.slice(i+1)
+				]
+			setSquare(arr);
+		}
+		
+	}
+	useEffect(() => {
+		const squares = square.slice();
+		console.log(squares)		
+		if(calculateWinner(squares)!=null){
+			setEnd(calculateWinner(squares));
+			console.log(calculateWinner(squares))	
+		}
 		if(end=='X') alert('X')
 		else if(end=='O') alert('O') 
-		else{
-			if(isX){
-				setIsX(false);
-				let arr=[
-						...square.slice(0,i),
-						'X',
-						...square.slice(i+1)
-					]
-				setSquare(arr);
-			}
-			else{
-				setIsX(true);
-				let arr=[
-						...square.slice(0,i),
-						'O',
-						...square.slice(i+1)
-					]
-				setSquare(arr);
-			}
-			const squares = square.slice();
-			if(calculateWinner(squares)!=null){
-				setEnd(calculateWinner(squares));
-				console.log(calculateWinner(squares))	
-			}
-		}
-	}
+	});	
 	const renderSquare = (i) => {
 		return <Square value={square[i]} onClick={()=>handleClick(i)}/>;
 	}
