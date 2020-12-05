@@ -14,26 +14,27 @@ function Board(){
 	const [isX,setIsX] = useState(true);
 	const [end,setEnd] = useState('E');
 	const handleClick = (i)=>{	
-		if(isX){
-			setIsX(false);
-			let arr=[
-					...square.slice(0,i),
-					'X',
-					...square.slice(i+1)
-				]
-			setSquare(arr);
-			console.log(square)
+		if(end=='E'){
+			if(isX){
+				setIsX(false);
+				let arr=[
+						...square.slice(0,i),
+						'X',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+				console.log(square)
+			}
+			else{
+				setIsX(true);
+				let arr=[
+						...square.slice(0,i),
+						'O',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+			}
 		}
-		else{
-			setIsX(true);
-			let arr=[
-					...square.slice(0,i),
-					'O',
-					...square.slice(i+1)
-				]
-			setSquare(arr);
-		}
-		
 	}
 	useEffect(() => {
 		const squares = square.slice();
@@ -48,7 +49,7 @@ function Board(){
 	const renderSquare = (i) => {
 		return <Square value={square[i]} onClick={()=>handleClick(i)}/>;
 	}
-	const status = 'Next player: ' + (isX?'X':'O') ;
+	const status = ( (end=='E') ? 'Next player : ' + (isX?'X':'O') : ('Winner Is : '+ ((end=='X')?'X':'O')) );
 	
 	return (
 	  <div>
