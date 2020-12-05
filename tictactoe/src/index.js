@@ -14,33 +14,33 @@ function Board(){
 	const [isX,setIsX] = useState(true);
 	const [end,setEnd] = useState('E');
 	const handleClick = (i)=>{	
-		if(isX){
-			setIsX(false);
-			let arr=[
-					...square.slice(0,i),
-					'X',
-					...square.slice(i+1)
-				]
-			setSquare(arr);
-			console.log(square)
+		if(end=='E'&&square[i]==null){
+			if(isX){
+				setIsX(false);
+				let arr=[
+						...square.slice(0,i),
+						'X',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+			}
+			else{
+				setIsX(true);
+				let arr=[
+						...square.slice(0,i),
+						'O',
+						...square.slice(i+1)
+					]
+				setSquare(arr);
+			}
 		}
-		else{
-			setIsX(true);
-			let arr=[
-					...square.slice(0,i),
-					'O',
-					...square.slice(i+1)
-				]
-			setSquare(arr);
-		}
-		
 	}
 	useEffect(() => {
 		const squares = square.slice();
-		console.log(squares)		
+		console.log(squares)
 		if(calculateWinner(squares)!=null){
 			setEnd(calculateWinner(squares));
-			console.log(calculateWinner(squares))	
+			console.log(calculateWinner(squares))
 		}
 		if(end=='X') alert('X')
 		else if(end=='O') alert('O') 
@@ -48,8 +48,12 @@ function Board(){
 	const renderSquare = (i) => {
 		return <Square value={square[i]} onClick={()=>handleClick(i)}/>;
 	}
-	const status = 'Next player: ' + (isX?'X':'O') ;
-	
+	const status = ( (end=='E') ? 'Next player : ' + (isX?'X':'O') : ('Winner Is : '+ ((end=='X')?'X':'O')) );
+	const reset = ()=>{
+		setSquare([null,null,null,null,null,null,null,null,null]);
+		setIsX(true);
+		setEnd('E');
+	}
 	return (
 	  <div>
 		<div className="status">{status}</div>
@@ -68,6 +72,9 @@ function Board(){
 			{renderSquare(7)}
 			{renderSquare(8)}
 		</div>
+		<button onClick={reset} >
+			reset
+		</button>
 	  </div>
 	);
 }
@@ -79,6 +86,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board />
         </div>
+		
         <div className="game-info">
           <div>{/* status */}</div>
           <ol>{/* TODO */}</ol>
